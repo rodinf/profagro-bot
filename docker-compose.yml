@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  telegram_bot:
+    build: .
+    ports:
+      - "5555:5555"  # Flask/FastAPI port
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+    depends_on:
+      - rabbitmq
+    volumes:
+      - .:/app
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"  # RabbitMQ default messaging port
+      - "15672:15672"  # RabbitMQ management UI
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
